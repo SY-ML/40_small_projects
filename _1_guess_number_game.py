@@ -52,4 +52,3 @@ while (1):
         msg = 'UP' if answer > user_input else 'DOWN'
         log[msg].append(user_input)
         print(msg)
-
