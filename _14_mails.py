@@ -5,9 +5,8 @@ from email.mime.text import MIMEText
 sy = SY_MailInfo()
 
 # Log-in Information
-email_from = 'ai.engr.sy@gmail.com'
-email_to = 'enterpriser.2c0@gmail.com'
 login_info = {'ID': sy.email, 'PW': sy.pw}
+email_to = 'ai.engr.sy@gmail.com'
 
 
 class Email_via_Gmail():
@@ -54,6 +53,8 @@ text = '''
 
 힘들겠지만 좋은게 좋다고 생각하세요. 7년의 행운을 빌면서...
 '''
+
+# Sending an email
 
 Email_via_Gmail(login_info= login_info, address_to= email_to, subject='Emailing test', text= text)
 
