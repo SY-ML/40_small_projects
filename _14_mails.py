@@ -1,6 +1,8 @@
 from sy_main import SY_MailInfo
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
 sy = SY_MailInfo()
 
@@ -32,6 +34,38 @@ class Email_via_Gmail():
         s.quit()
 
 
+class EmailWithAttachments():
+    def __init__(self, login_info, address_to, subject, text, path_attachment, attachment_to_be_name):
+        self.ID, self.PW = login_info['ID'], login_info['PW']
+        self.mail_to = address_to
+        self.title = subject
+        self.text = text
+        self.atch = path_attachment
+        self.atch_tobe = attachment_to_be_name
+        self.send_an_email_with_attachments()
+
+    def send_an_email_with_attachments(self):
+        msg = MIMEMultipart()
+        msg['Subject'] = self.title
+        msg['From'] = self.ID
+        msg['To'] = self.mail_to
+
+        contentPart = MIMEText(self.text)
+        msg.attach(contentPart)
+
+        with open(self.atch, 'rb') as f:
+            atch_part = MIMEApplication(f.read())
+            atch_part.add_header('Content-Disposition', 'attachment', filename= self.atch_tobe)
+            msg.attach((atch_part))
+
+        s = smtplib.SMTP('smtp.gmail.com', 587)  # Gmail's smtp address and port number
+        s.starttls()
+        s.login(self.ID, self.PW)
+        s.sendmail(self.ID, self.mail_to, msg.as_string())
+        s.quit()
+
+
+
 text = '''
 이 편지는 영국에서 최초로 시작되어 일년에 한바퀴를 돌면서 받는 사람에게 행운을 주었고 지금은 당신에게로 옮겨진 이 편지는 4일 안에 당신 곁을 떠나야 합니다. 
 이 편지를 포함해서 7통을 행운이 필요한 사람에게 보내 주셔야 합니다. 
@@ -56,7 +90,9 @@ text = '''
 
 # Sending an email
 
-Email_via_Gmail(login_info= login_info, address_to= email_to, subject='Emailing test', text= text)
-
+# Email_via_Gmail(login_info=login_info, address_to=email_to, subject='Emailing test', text=text)
+EmailWithAttachments(login_info= login_info, address_to= email_to,
+                     subject='Emailing w/ attachment test', text= text,
+                     path_attachment=r'attach_me.txt', attachment_to_be_name='행운의편지.txt')
 
 # commit test - laptop
